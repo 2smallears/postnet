@@ -90,4 +90,39 @@ describe('input postcode print barcode', () => {
 });
 
 describe('input barcode print postcode', () => {
+    describe('input correct barcode', () => {
+       const barcode = '||:|:::|:|:|:::|:::||::||::|:|:|';
+       it('check barcode', () => {
+          const checkResult = app.checkBarcode(barcode).toString();
+          expect(checkResult).toEqual('true');
+       });
+
+       it('get barcodeArr', () => {
+          const barcodeArr = app.buildBarcodeArr(barcode);
+          const expectBarcodeArr = ['|:|::',':|:|:','|:::|',':::||','::||:',':|:|:'];
+          expect(barcodeArr).toEqual(expectBarcodeArr);
+       });
+
+       it('get postcodeDigits', () => {
+          const barcodeArr = ['|:|::',':|:|:','|:::|',':::||','::||:',':|:|:'];
+          const postcodeDigits = app.buildPostcodeDigits(barcodeArr, barcodeDigits);
+          const expectDigits = [9,5,7,1,3,5];
+          expect(postcodeDigits).toEqual(expectDigits);
+       });
+
+       it('get postcode', () => {
+          const postcodeDigits = [9,5,7,1,3,5];
+          const postcode = app.buildPostcode(postcodeDigits);
+          const expectPostcode = '95713';
+          expect(postcode).toEqual(expectPostcode);
+       });
+    });
+
+    describe('input wrong barcode', () => {
+        const barcode = '||:|:::|:|';
+        it('check postcode', () => {
+            const checkResult = app.checkBarcode(barcode);
+            expect(checkResult).toEqual('your barcode is wrong!');
+        });
+    });
 });
